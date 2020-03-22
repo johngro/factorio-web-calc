@@ -256,9 +256,6 @@ function getRecipeGraph(data) {
         if (!category) {
             category = "basic-solid"
         }
-        if (category != "basic-solid") {
-            continue
-        }
         var name = entity.name
         var props = entity.minable
         var ingredients = null

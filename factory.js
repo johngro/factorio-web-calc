@@ -598,9 +598,7 @@ function getFactories(data) {
     }
     for (var name in data["mining-drill"]) {
         var d = data["mining-drill"][name]
-        if (d.name == "pumpjack") {
-            continue
-        }
+
         var fuel = null
         if (d.energy_source && d.energy_source.type === "burner") {
             fuel = d.energy_source.fuel_category
@@ -615,7 +613,7 @@ function getFactories(data) {
             d.name,
             d.icon_col,
             d.icon_row,
-            ["mining-basic-solid"],
+            d.resource_categories.map(c => 'mining-' + c),
             power,
             RationalFromFloat(d.mining_speed),
             d.module_slots,
