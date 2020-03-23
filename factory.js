@@ -383,10 +383,20 @@ FactorySpec.prototype = {
         if (!factories) {
             return null
         }
-        if (!this.useMinimum(recipe)) {
-            return factories[factories.length - 1]
-        }
+
         var factoryDef
+        if (!this.useMinimum(recipe)) {
+            // If we are not using a configured minimum, choose the first
+            // factory in the list which does not use fuel to operate.  If
+            // everything uses fuel to operate, then just choose the first thing
+            // in the list.
+            factoryDef = factories.find(f => f.fuel == null)
+            if (factoryDef == null) {
+                factoryDef = factories[0];
+            }
+            return factoryDef
+        }
+
         for (var i = 0; i < factories.length; i++) {
             factoryDef = factories[i]
             if (factoryDef.less(this.minimum) || useLegacyCalculations && factoryDef.max_ing < recipe.ingredients.length) {
