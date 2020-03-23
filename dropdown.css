@@ -61,12 +61,14 @@
 .dropdownWrapper .dropdown input[type="radio"] {
     display: none;
 }
-.dropdownWrapper .dropdown input[type="radio"] + label {
+.dropdownWrapper .dropdown input[type="radio"] + label,
+.dropdownWrapper .dropdown .initialSelection {
     border-radius: 5px;
     display: none;
     margin: 2px;
 }
-.dropdownWrapper.open .dropdown input[type="radio"] + label {
+.dropdownWrapper.open .dropdown input[type="radio"] + label,
+.dropdownWrapper .dropdown .initialSelection {
     display: inline-block;
 }
 .dropdownWrapper .dropdown input[type="radio"] + label:hover {
