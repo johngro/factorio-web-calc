@@ -405,26 +405,29 @@ FactorySpec.prototype = {
         }
         return factoryDef
     },
-    // TODO: This should be very cheap. Calling getFactoryDef on each call
-    // should not be necessary. Changing the minimum should proactively update
-    // all of the factories to which it applies.
     getFactory: function(recipe) {
+        // If we have a configured factory, return it.
+        let factory = this.spec[recipe.name]
+        if (factory) {
+            return factory
+        }
+
+        // We do not currently have a factory defined for this recipe.  Try
+        // to find a factory definition which we can use to to create a
+        // factory for this recipe.
         if (!recipe.category) {
             return null
         }
-        var factoryDef = this.getFactoryDef(recipe)
+
+        let factoryDef = this.getFactoryDef(recipe)
         if (!factoryDef) {
             return null
         }
-        var factory = this.spec[recipe.name]
-        // If the minimum changes, update the factory the next time we get it.
-        if (factory) {
-            factory.setFactory(factoryDef, this)
-            return factory
-        }
-        this.spec[recipe.name] = factoryDef.makeFactory(this, recipe)
-        this.spec[recipe.name].beaconCount = this.defaultBeaconCount
-        return this.spec[recipe.name]
+
+        factory = factoryDef.makeFactory(this, recipe)
+        factory.beaconCount = this.defaultBeaconCount
+        this.spec[recipe.name] = factory
+        return factory
     },
     moduleCount: function(recipe) {
         var factory = this.getFactory(recipe)
