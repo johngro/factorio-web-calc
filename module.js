@@ -137,7 +137,7 @@ function moduleDropdown(selection, name, selected, callback, filter) {
             noModImage.title = NO_MODULE
             return noModImage
         } else {
-            return getImage(d, false, dropdown.node())
+            return getImage(d, false, dropdown.node(), dropdown.node().parentNode)
         }
     })
     let inputs = {}

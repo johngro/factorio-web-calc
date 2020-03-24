@@ -99,7 +99,7 @@ function BuildTarget(index, itemName) {
         d => d.name === this.itemName,
         ItemHandler(this),
     )
-    labels.append(d => getImage(d, false, dropdown.node()))
+    labels.append(d => getImage(d, false, dropdown.node(), dropdown.node().parentNode))
 
     // Use a single global target count, as a given target's index can change.
     targetCount++
@@ -156,7 +156,7 @@ BuildTarget.prototype = {
             (d, i) => self.recipeIndex === i,
             (d, i) => RecipeSelectorHandler(self, i),
         )
-        labels.append(d => getImage(d, false, dropdown.node()))
+        labels.append(d => getImage(d, false, dropdown.node(), dropdown.node().parentNode))
         recipeSelectorCount++
         this.recipeSelector.appendChild(new Text(" \u00d7 "))
     },

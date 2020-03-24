@@ -13,13 +13,17 @@ See the License for the specific language governing permissions and
 limitations under the License.*/
 "use strict"
 
-function Tooltip(reference, content, target) {
+function Tooltip(reference, content, target, container) {
     if (!target) {
         target = reference
+    }
+    if (!container) {
+        container = document.body
     }
     this.reference = reference
     this.content = content
     this.target = target
+    this.container = container
     this.isOpen = false
     this.node = null
     this.popper = null
@@ -38,7 +42,8 @@ Tooltip.prototype = {
             return
         }
         var node = this.create()
-        document.body.appendChild(node)
+        this.container.appendChild(node)
+
         this.popper = new Popper(
             this.target,
             node,

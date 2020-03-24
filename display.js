@@ -240,7 +240,7 @@ BeltIcon.prototype = {
         var t = document.createElement("div")
         t.classList.add("frame")
         var title = document.createElement("h3")
-        var im = getImage(this, true)
+        title.appendChild(getImage(this, true))
         title.appendChild(im)
         title.appendChild(new Text(formatName(this)))
         t.appendChild(title)
@@ -257,18 +257,18 @@ function ItemRow(row, item, canIgnore) {
     var nameCell = document.createElement("td")
     nameCell.className = "right-align"
     this.itemIcon = new ItemIcon(item, canIgnore)
-    var im = getImage(this.itemIcon)
-    im.classList.add("display")
+    let icon = new Icon(this.itemIcon)
+    icon.img_node().classList.add("display")
     if (canIgnore) {
         if (spec.ignore[item.name]) {
             this.itemIcon.setText("(Click to unignore.)")
         } else {
             this.itemIcon.setText("(Click to ignore.)")
         }
-        im.classList.add("recipe-icon")
+        icon.img_node().classList.add("recipe-icon")
     }
-    this.image = im
-    nameCell.appendChild(im)
+    this.image = icon.node()
+    nameCell.appendChild(icon.node())
     row.appendChild(nameCell)
 
     var rateCell = document.createElement("td")
@@ -321,8 +321,7 @@ ItemRow.prototype = {
         while (this.beltCell.hasChildNodes()) {
             this.beltCell.removeChild(this.beltCell.lastChild)
         }
-        var beltImage = getImage(new BeltIcon())
-        this.beltCell.appendChild(beltImage)
+        this.beltCell.appendChild(getImage(new BeltIcon()))
         this.beltCell.appendChild(new Text(" \u00d7"))
         var beltCount = itemRate.div(preferredBeltSpeed)
         this.beltCountNode.textContent = alignCount(beltCount)
@@ -559,8 +558,7 @@ FactoryRow.prototype = {
         if (power.fuel === "electric") {
             this.powerNode.textContent = alignPower(power.power)
         } else if (power.fuel === "chemical") {
-            var fuelImage = getImage(preferredFuel)
-            this.fuelCell.appendChild(fuelImage)
+            this.fuelCell.appendChild(getImage(preferredFuel))
             this.fuelCell.appendChild(new Text(" \u00d7"))
             this.powerNode.textContent = alignRate(power.power.div(preferredFuel.value)) + "/" + rateName
         }
@@ -584,8 +582,6 @@ FactoryRow.prototype = {
             return
         }
         this.factory = spec.getFactory(this.recipe)
-        var image = getImage(this.factory.factory)
-        image.classList.add("display")
         while (this.factoryCell.hasChildNodes()) {
             this.factoryCell.removeChild(this.factoryCell.lastChild)
         }
