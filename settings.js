@@ -206,18 +206,15 @@ function renderMinimumAssembler(settings) {
     setMinimumAssembler(min)
     var oldNode = document.getElementById("minimum_assembler")
     var cell = oldNode.parentNode
-    var node = document.createElement("span")
-    node.id = "minimum_assembler"
-    let dropdown = makeDropdown(d3.select(node))
-    let inputs = dropdown.selectAll("div").data(assemblers).join("div")
-    let labels = addInputs(
-        inputs,
-        "assembler_dropdown",
-        (d, i) => String(i + 1) === min,
-        (d, i) => changeMin(String(i + 1)),
+
+    let selector = Selector.makeSimpleDropdown(
+        "minimum_assembler",
+        assemblers,
+        assemblers[parseInt(min) - 1],
+        (d, i) => changeMin(String(i + 1))
     )
-    labels.append(d => getImage(d, false, dropdown.node(), dropdown.node().parentNode))
-    cell.replaceChild(node, oldNode)
+
+    cell.replaceChild(selector.node(), oldNode)
 }
 
 function setMinimumAssembler(min) {
@@ -238,21 +235,19 @@ function renderFurnace(settings) {
     if (furnaceName !== spec.furnace.name) {
         spec.setFurnace(furnaceName)
     }
-    var oldNode = document.getElementById("furnace")
-    var cell = oldNode.parentNode
-    var node = document.createElement("span")
-    node.id = "furnace"
     let furnaces = spec.factories["smelting"]
-    let dropdown = makeDropdown(d3.select(node))
-    let inputs = dropdown.selectAll("div").data(furnaces).join("div")
-    let labels = addInputs(
-        inputs,
-        "furnace_dropdown",
-        d => d.name === furnaceName,
-        changeFurnace,
-    )
-    labels.append(d => getImage(d, false, dropdown.node(), dropdown.node().parentNode))
-    cell.replaceChild(node, oldNode)
+    let oldNode = document.getElementById("furnace")
+    let cell = oldNode.parentNode
+
+    let initial_furnace = furnaces.find( f => f.name == furnaceName );
+
+    let selector = Selector.makeSimpleDropdown(
+        "furnace",
+        furnaces,
+        initial_furnace,
+        changeFurnace)
+
+    cell.replaceChild(selector.node(), oldNode)
 }
 
 // fuel
@@ -266,24 +261,18 @@ function renderFuel(settings) {
         fuelName = settings.fuel
     }
     setPreferredFuel(fuelName)
+
     var oldNode = document.getElementById("fuel")
     var cell = oldNode.parentNode
-    var node = document.createElement("span")
-    node.id = "fuel"
-    let dropdown = makeDropdown(d3.select(node))
-    let inputs = dropdown.selectAll("div").data(fuel).join("div")
-    let labels = addInputs(
-        inputs,
-        "fuel_dropdown",
-        d => d.name === fuelName,
-        changeFuel,
-    )
-    labels.append(d => {
-        let icon = new Icon(d, false, dropdown.node(), dropdown.node().parentNode)
-        icon.img_node().title += " (" + d.valueString() + ")"
-        return icon.node()
-    })
-    cell.replaceChild(node, oldNode)
+    let initial_fuel = fuel.find( f => f.name == fuelName )
+
+    let selector = Selector.makeSimpleDropdown(
+        "fuel",
+        fuel,
+        initial_fuel,
+        changeFuel)
+
+    cell.replaceChild(selector.node(), oldNode)
 }
 
 function setPreferredFuel(name) {
@@ -324,20 +313,23 @@ function renderOil(settings) {
         oil = settings.p
     }
     setOilRecipe(oil)
+
+
     var oldNode = document.getElementById("oil")
     var cell = oldNode.parentNode
-    var node = document.createElement("span")
-    node.id = "oil"
-    let dropdown = makeDropdown(d3.select(node))
-    let inputs = dropdown.selectAll("div").data(OIL_OPTIONS).join("div")
-    let labels = addInputs(
-        inputs,
-        "oil_dropdown",
-        d => d.priority === oil,
+
+    let selector = Selector.makeSimpleDropdown(
+        "oil",
+        OIL_OPTIONS,
+        OIL_OPTIONS.find(o => o.priority == oil),
         changeOil,
+        (selector, d) => getImage(solver.recipes[d.name],
+                                  false,
+                                  selector.dropdown.node(),
+                                  selector.tooltip_container)
     )
-    labels.append(d => getImage(solver.recipes[d.name], false, dropdown.node(), dropdown.node().parentNode))
-    cell.replaceChild(node, oldNode)
+
+    cell.replaceChild(selector.node(), oldNode)
 }
 
 function setOilRecipe(name) {
@@ -386,18 +378,19 @@ function renderBelt(settings) {
     var cell = oldNode.parentNode
     var node = document.createElement("span")
     node.id = "belt"
-    let dropdown = makeDropdown(d3.select(node))
-    let inputs = dropdown.selectAll("div").data(belts).join("div")
-    let labels = addInputs(
-        inputs,
-        "belt_dropdown",
-        d => d.name === preferredBelt,
+
+    let selector = Selector.makeSimpleDropdown(
+        "oil",
+        belts,
+        belts.find( b => b.name == preferredBelt ),
         changeBelt,
+        (selector, d) => {
+            let belt_icon = new BeltIcon(solver.items[d.name], d.speed)
+            return getImage(belt_icon, false, selector.dropdown.node(), selector.tooltip_container)
+        }
     )
-    labels.append(d => {
-        let belt_icon = new BeltIcon(solver.items[d.name], d.speed)
-        return getImage(belt_icon, false, dropdown.node(), dropdown.node().parentNode)
-    })
+    node.appendChild(selector.node())
+
     cell.replaceChild(node, oldNode)
 }
 
@@ -461,12 +454,14 @@ function renderDefaultModule(settings) {
     var cell = oldDefMod.parentNode
     var node = document.createElement("span")
     node.id = "default_module"
-    moduleDropdown(
-        d3.select(node),
+
+    let selector = moduleDropdown(
         "default_module_dropdown",
-        d => d === defaultModule,
-        changeDefaultModule,
+        defaultModule,
+        changeDefaultModule
     )
+    node.appendChild(selector.node())
+
     cell.replaceChild(node, oldDefMod)
 }
 
@@ -489,13 +484,15 @@ function renderDefaultBeacon(settings) {
     var cell = oldDefMod.parentNode
     var node = document.createElement("span")
     node.id = "default_beacon"
-    moduleDropdown(
-        d3.select(node),
+
+    let selector = moduleDropdown(
         "default_beacon_dropdown",
-        d => d === defaultBeacon,
+        defaultBeacon,
         changeDefaultBeacon,
-        d => d === null || d.canBeacon(),
+        d => d === null || d.canBeacon()
     )
+    node.appendChild(selector.node())
+
     cell.replaceChild(node, oldDefMod)
 }
 

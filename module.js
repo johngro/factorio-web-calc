@@ -112,44 +112,35 @@ Module.prototype = {
     }
 }
 
-function moduleDropdown(selection, name, selected, callback, filter) {
-    let rows = [[null]].concat(moduleRows)
+function moduleDropdown(name, initial_selection, callback, filter) {
+    let options_generator = (selector) => {
+        let rows = [[null]].concat(moduleRows)
 
-    let dropdown = makeDropdown(selection)
-    let options = dropdown.selectAll("div")
-        .data(rows)
-        .join("div")
-            .selectAll("span")
-            .data(d => d)
-            .join("span")
-    if (filter) {
-        options = options.filter(filter)
+        let options = selector.dropdown.selectAll("div")
+            .data(rows)
+            .join("div")
+                .selectAll("span")
+                .data(d => d)
+                .join("span")
+
+        if (filter) {
+            options = options.filter(filter)
+        }
+
+        return options
     }
-    let labels = addInputs(
-        options,
-        name,
-        selected,
-        callback,
-    )
-    labels.append(d => {
+
+    let content_generator = (selector, d) => {
         if (d === null) {
             let noModImage = getExtraImage("slot_icon_module")
             noModImage.title = NO_MODULE
             return noModImage
         } else {
-            return getImage(d, false, dropdown.node(), dropdown.node().parentNode)
+            return getImage(d, false, selector.dropdown.node(), selector.tooltip_container)
         }
-    })
-    let inputs = {}
-    options.each(function(d) {
-        let element = d3.select(this).select('input[type="radio"]').node()
-        if (d === null) {
-            inputs[NO_MODULE] = element
-        } else {
-            inputs[d.name] = element
-        }
-    })
-    return {dropdown: dropdown.node(), inputs: inputs}
+    }
+
+    return new Selector(name, options_generator, content_generator, initial_selection, callback)
 }
 
 function getModules(data) {

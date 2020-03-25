@@ -508,14 +508,16 @@ function FactoryRow(row, recipe) {
 
     var beaconCell = document.createElement("td")
     beaconCell.classList.add("pad", "module", "factory")
-    let {inputs} = moduleDropdown(
-        d3.select(beaconCell),
+
+    let selector = moduleDropdown(
         "mod-" + recipeName + "-beacon",
-        d => d === null,
+        null,
         BeaconHandler(recipeName),
         d => d === null || d.canBeacon(),
     )
-    this.beacon = inputs
+    beaconCell.appendChild(selector.node())
+    this.beacon = selector
+
     var beaconX = document.createElement("span")
     beaconX.appendChild(new Text(" \u00D7 "))
     beaconCell.appendChild(beaconX)
@@ -604,15 +606,17 @@ FactoryRow.prototype = {
                 let self = this
                 var index = this.dropdowns.length
                 var installedModule = this.factory.modules[index]
-                let {dropdown, inputs} = moduleDropdown(
-                    d3.select(this.modulesCell),
+
+                let selector = moduleDropdown(
                     "mod-" + this.recipe.name + "-" + index,
-                    d => d === installedModule,
+                    installedModule,
                     ModuleHandler(this, index),
                     d => d === null || d.canUse(self.recipe),
                 )
-                this.dropdowns.push(dropdown.parentNode)
-                this.modules.push(inputs)
+
+                this.modulesCell.appendChild(selector.node())
+                this.dropdowns.push(selector.node())
+                this.modules.push(selector)
             }
         }
         if (moduleDelta != 0) {
@@ -650,7 +654,7 @@ FactoryRow.prototype = {
         } else {
             name = NO_MODULE
         }
-        this.modules[index][name].checked = true
+        this.modules[index].setSelected(module)
     },
     setDisplayedBeacon: function(module, count) {
         var name
@@ -659,7 +663,7 @@ FactoryRow.prototype = {
         } else {
             name = NO_MODULE
         }
-        this.beacon[name].checked = true
+        this.beacon.setSelected(module)
         this.beaconCount.value = count.toString()
     },
     csv: function() {
