@@ -54,20 +54,26 @@ FactoryDef.prototype = {
             t.appendChild(new Text(this.max_ing))
             t.appendChild(document.createElement("br"))
         }
+
+        let div = t.appendChild(document.createElement("div"))
         b = document.createElement("b")
         b.textContent = "Energy consumption: "
-        t.appendChild(b)
-        t.appendChild(new Text(alignPower(this.energyUsage, 0)))
-        t.appendChild(document.createElement("br"))
+        div.appendChild(b)
+        div.appendChild(new Text(alignPower(this.energyUsage, 0)))
+        div.appendChild(document.createElement("br"))
+
+        div = t.appendChild(document.createElement("div"))
         b = document.createElement("b")
         b.textContent = "Crafting speed: "
-        t.appendChild(b)
-        t.appendChild(new Text(this.speed.toDecimal()))
-        t.appendChild(document.createElement("br"))
+        div.appendChild(b)
+        div.appendChild(new Text(this.speed.toDecimal()))
+        div.appendChild(document.createElement("br"))
+
+        div = t.appendChild(document.createElement("div"))
         b = document.createElement("b")
         b.textContent = "Module slots: "
-        t.appendChild(b)
-        t.appendChild(new Text(this.moduleSlots))
+        div.appendChild(b)
+        div.appendChild(new Text(this.moduleSlots))
         return t
     }
 }
@@ -94,27 +100,35 @@ MinerDef.prototype.renderTooltip = function() {
     title.appendChild(getImage(this, true))
     title.appendChild(new Text(formatName(this)))
     t.appendChild(title)
+
+    let div = t.appendChild(document.createElement("div"))
     var b = document.createElement("b")
     b.textContent = "Energy consumption: "
-    t.appendChild(b)
-    t.appendChild(new Text(alignPower(this.energyUsage, 0)))
-    t.appendChild(document.createElement("br"))
+    div.appendChild(b)
+    div.appendChild(new Text(alignPower(this.energyUsage, 0)))
+    div.appendChild(document.createElement("br"))
+
     if (useLegacyCalculations) {
+        div = t.appendChild(document.createElement("div"))
         b = document.createElement("b")
         b.textContent = "Mining power: "
-        t.appendChild(b)
-        t.appendChild(new Text(this.mining_power.toDecimal()))
-        t.appendChild(document.createElement("br"))
+        div.appendChild(b)
+        div.appendChild(new Text(this.mining_power.toDecimal()))
+        div.appendChild(document.createElement("br"))
     }
+
+    div = t.appendChild(document.createElement("div"))
     b = document.createElement("b")
     b.textContent = "Mining speed: "
-    t.appendChild(b)
-    t.appendChild(new Text(this.mining_speed.toDecimal()))
-    t.appendChild(document.createElement("br"))
+    div.appendChild(b)
+    div.appendChild(new Text(this.mining_speed.toDecimal()))
+    div.appendChild(document.createElement("br"))
+
+    div = t.appendChild(document.createElement("div"))
     b = document.createElement("b")
     b.textContent = "Module slots: "
-    t.appendChild(b)
-    t.appendChild(new Text(this.moduleSlots))
+    div.appendChild(b)
+    div.appendChild(new Text(this.moduleSlots))
     return t
 }
 
