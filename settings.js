@@ -189,20 +189,27 @@ function renderPrecisions(settings) {
 }
 
 // minimum assembler
-var DEFAULT_MINIMUM = "1"
-
+var DEFAULT_MINIMUM = "0"
 var minimumAssembler = DEFAULT_MINIMUM
 
 function renderMinimumAssembler(settings) {
-    var min = DEFAULT_MINIMUM
-    // Backward compatibility.
-    if ("use_3" in settings && settings.use_3 == "true") {
-        min = "3"
+    // "assembling-machine-1" should be our default minimum assembler.  Now that
+    // we have computed our factory specs, find the index of this factory in our
+    // "crafting" spec.
+    let assemblers = spec.factories["crafting"]
+    let ndx = assemblers.findIndex(f => f.name == "assembling-machine-1")
+    if (ndx >= 0) {
+        DEFAULT_MINIMUM = String(ndx + 1)
+        minimumAssembler = DEFAULT_MINIMUM
     }
-    var assemblers = spec.factories["crafting"]
-    if ("min" in settings && Number(min) >= 1 && Number(min) <= assemblers.length) {
+
+    // If min assembler was passed via settings and is valid, use that.
+    // Otherwise, use the default.
+    var min = DEFAULT_MINIMUM
+    if ("min" in settings && Number(settings.min) >= 1 && Number(settings.min) <= assemblers.length) {
         min = settings.min
     }
+
     setMinimumAssembler(min)
     var oldNode = document.getElementById("minimum_assembler")
     var cell = oldNode.parentNode

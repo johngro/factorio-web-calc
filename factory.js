@@ -329,6 +329,26 @@ var assembly_machine_categories = {
 }
 
 function compareFactories(a, b) {
+    // If the things we are comparing have factory/miner groups defined for
+    // them, then use the groups to determine order first.
+    if (a.group && b.group) {
+        if (a.group.max.less(b.group.max)) {
+            return -1
+        }
+
+        if (b.group.max.less(a.group.max)) {
+            return 1
+        }
+
+        if (a.group.name != b.group.name) {
+            if (a.group.name < b.group.name) {
+                return -1;
+            } else {
+                return 1;
+            }
+        }
+    }
+
     if (a.less(b)) {
         return -1
     }
@@ -341,8 +361,56 @@ function compareFactories(a, b) {
 function FactorySpec(factories) {
     this.spec = {}
     this.factories = {}
+
+    // If we have tweaks for dealing with Bob's turned on:
+    //
+    // Build groups of factories and miners which share the same basic name.
+    // Anything of the form <group_name>-<optional_number> will be grouped
+    // together, and the min/max elements of each group will be calculated
+    // for sorting purposes later.
+    if (bobsTweaksEnabled) {
+        let re = new RegExp("^(.*?)(-[0-9]+)?$");
+        let fgroups = {}
+        factories.forEach(f => {
+            // Extract the base name.  
+            let basename = f.name.match(re)[1]
+
+            let speed = null
+            if (f.speed) {
+                speed = f.speed
+            } else if (f.mining_speed){
+                speed = f.mining_speed
+            }
+
+            if (fgroups[basename]) {
+                let obj = fgroups[basename]
+                if (f.less(obj.min)) { obj.min = f }
+                if (obj.max.less(f)) { obj.max = f }
+                f.group = obj
+            } else {
+                let obj = {}
+                obj.min = f
+                obj.max = f
+                obj.name = basename
+                f.group = obj
+                fgroups[basename] = obj
+            }
+        })
+
+        // Add some Bob's categories to assembly machine categories used for min
+        // assembly machine selection.
+        assembly_machine_categories.electronics = true
+        assembly_machine_categories["electronics-machine"] = true
+        assembly_machine_categories["crafting-machine"] = true
+    }
+
     for (var i = 0; i < factories.length; i++) {
         var factory = factories[i]
+
+        if (factory.name.startsWith("crash-site")) {
+            continue
+        }
+
         for (var j = 0; j < factory.categories.length; j++) {
             var category = factory.categories[j]
             if (!(category in this.factories)) {
@@ -356,8 +424,17 @@ function FactorySpec(factories) {
     }
     this.setMinimum("1")
     var smelters = this.factories["smelting"]
-    this.furnace = smelters[smelters.length - 1]
+
+    // If Bob's tweaks are enabled, don't just choose the last smelter on the list.  Instead, look
+    // specifically for "electric-furnace" with the last thing on the list as our fallback.
+    if (bobsTweaksEnabled) {
+        this.furnace = smelters.find(s => s.name == "electric-furnace")
+    }
+    if (!this.furnace) {
+        this.furnace = smelters[smelters.length - 1]
+    }
     DEFAULT_FURNACE = this.furnace.name
+
     this.miningProd = zero
     this.ignore = {}
 
@@ -412,7 +489,7 @@ FactorySpec.prototype = {
 
         for (var i = 0; i < factories.length; i++) {
             factoryDef = factories[i]
-            if (factoryDef.less(this.minimum) || useLegacyCalculations && factoryDef.max_ing < recipe.ingredients.length) {
+            if ((compareFactories(factoryDef, this.minimum) < 0) || useLegacyCalculations && factoryDef.max_ing < recipe.ingredients.length) {
                 continue
             }
             break
