@@ -90,6 +90,11 @@ function formatSettings(targets) {
     if (tooltipsEnabled != DEFAULT_TOOLTIP) {
         settings += "t=off&"
     }
+    if (bobsTweaksEnabled != DEFAULT_BOBS_TWEAKS) {
+        let val = "off"
+        if (bobsTweaksEnabled) { val = "on" }
+        settings += "btweak=" + val + "&"
+    }
 
     settings += "items="
     var targetStrings = []

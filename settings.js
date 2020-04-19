@@ -14,11 +14,12 @@ limitations under the License.*/
 "use strict"
 
 // data set
-function Modification(name, filename, legacy, sheetSize) {
+function Modification(name, filename, legacy, sheetSize, is_bobs) {
     this.name = name
     this.filename = filename
     this.legacy = legacy
     this.sheetSize = sheetSize
+    this.is_bobs = is_bobs
 }
 
 var MODIFICATIONS = {
@@ -27,7 +28,7 @@ var MODIFICATIONS = {
     "0-17-60": new Modification("Vanilla 0.17.60", "vanilla-0.17.60.json", false, [480, 512]),
     "0-17-60x": new Modification("Vanilla 0.17.60 - Expensive", "vanilla-0.17.60-expensive.json", false, [480, 512]),
     "017science": new Modification("0.16.51 w/ 0.17 science mod", "017science-0.16.51.json", true, [480, 512]),
-    "bobs-0-18-21": new Modification("(EXPERIMENTAL) Bob's Mods + base 0.18.21", "bobs-0.18.21.json", false, [896, 960])
+    "bobs-0-18-21": new Modification("(EXPERIMENTAL) Bob's Mods + base 0.18.21", "bobs-0.18.21.json", false, [896, 960], true)
 }
 
 var DEFAULT_MODIFICATION = "bobs-0-18-21"
@@ -579,6 +580,21 @@ function renderTooltip(settings) {
     }
     var input = document.getElementById("tooltip")
     input.checked = tooltipsEnabled
+}
+
+var DEFAULT_BOBS_TWEAKS
+var bobsTweaksEnabled
+function setupBobsTweaks(settings, default_enabled) {
+    DEFAULT_BOBS_TWEAKS = default_enabled
+
+    if ("btweak" in settings) {
+        bobsTweaksEnabled = settings.btweak !== "off"
+    } else {
+        bobsTweaksEnabled = default_enabled;
+    }
+
+    var input = document.getElementById("bobstweaks")
+    input.checked = bobsTweaksEnabled
 }
 
 // debug tab

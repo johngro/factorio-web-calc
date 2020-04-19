@@ -288,6 +288,12 @@ function changeTooltip(event) {
     display()
 }
 
+// Triggered when Bob's tweaks box is toggled.
+function changeBobsTweaks(event) {
+    bobsTweaksEnabled = event.target.checked
+    display()
+}
+
 // recipe row events
 
 function IgnoreHandler(row) {

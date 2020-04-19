@@ -76,12 +76,9 @@ function reset() {
     oldTotals.parentNode.replaceChild(newTotals, oldTotals)
 }
 
-function loadDataRunner(modName, callback) {
+function loadDataRunner(mod, callback) {
     var xobj = new XMLHttpRequest()
-    var mod = MODIFICATIONS[modName]
-    if (!mod) {
-        mod = MODIFICATIONS[DEFAULT_MODIFICATION]
-    }
+
     spriteSheetSize = mod.sheetSize
     useLegacyCalculations = mod.legacy
     var filename = "data/" + mod.filename
@@ -101,7 +98,14 @@ function loadData(modName, settings) {
     if (!settings) {
         settings = {}
     }
-    loadDataRunner(modName, function(data) {
+
+    let mod = MODIFICATIONS[modName]
+    if (!mod) {
+        mod = MODIFICATIONS[DEFAULT_MODIFICATION]
+    }
+    setupBobsTweaks(settings, mod.is_bobs)
+
+    loadDataRunner(mod, function(data) {
         getSprites(data)
         var graph = getRecipeGraph(data)
         modules = getModules(data)
