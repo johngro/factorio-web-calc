@@ -54,7 +54,7 @@ class Icon {
         node.appendChild(im)
 
         if (tooltipsEnabled && obj.renderTooltip && !suppressTooltip) {
-            new Tooltip(im, obj.renderTooltip(), tooltipTarget, tooltipContainer)
+            new Tooltip(im, () => obj.renderTooltip(), tooltipTarget, tooltipContainer)
         } else {
             im.title = obj.name
         }

@@ -13,7 +13,7 @@ See the License for the specific language governing permissions and
 limitations under the License.*/
 "use strict"
 
-function Tooltip(reference, content, target, container) {
+function Tooltip(reference, content_generator, target, container) {
     if (!target) {
         target = reference
     }
@@ -21,7 +21,7 @@ function Tooltip(reference, content, target, container) {
         container = document.body
     }
     this.reference = reference
-    this.content = content
+    this.content_generator = content_generator
     this.target = target
     this.container = container
     this.isOpen = false
@@ -35,14 +35,31 @@ Tooltip.prototype = {
         if (this.isOpen) {
             return
         }
-        this.isOpen = true
-        if (this.node) {
+
+        if (this.node == null) {
+            this.create()
+        } else {
             this.node.style.display = ""
             this.popper.update()
+        }
+
+        this.isOpen = true
+    },
+    hide: function() {
+        if (!this.isOpen) {
             return
         }
-        var node = this.create()
-        this.container.appendChild(node)
+        this.isOpen = false
+        this.node.style.display = "none"
+    },
+
+    create: function() {
+        let node = document.createElement("div")
+        let content = this.content_generator();
+
+        node.classList.add("tooltip")
+        node.style.display = ""
+        node.appendChild(content);
 
         this.popper = new Popper(
             this.target,
@@ -59,21 +76,13 @@ Tooltip.prototype = {
                 }
             }
         )
+        this.popper.update()
+
+        this.container.appendChild(node)
         this.node = node
+        this.content = content
     },
-    hide: function() {
-        if (!this.isOpen) {
-            return
-        }
-        this.isOpen = false
-        this.node.style.display = "none"
-    },
-    create: function() {
-        var node = document.createElement("div")
-        node.classList.add("tooltip")
-        node.appendChild(this.content)
-        return node
-    },
+
     addEventListeners: function() {
         var self = this
         this.reference.addEventListener("mouseenter", function() {
@@ -82,5 +91,14 @@ Tooltip.prototype = {
         this.reference.addEventListener("mouseleave", function() {
             self.hide()
         })
+    },
+    updateContentGenerator: function(content_generator) {
+        if (this.node) {
+            let new_content = content_generator();
+            this.node.replaceChild(new_content, this.content)
+            this.popper.update()
+            this.content = new_content
+        }
+        this.content_generator = content_generator
     }
 }
