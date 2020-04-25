@@ -591,7 +591,25 @@ FactoryRow.prototype = {
             this.factoryCell.appendChild(getImage(this.recipe))
             this.factoryCell.appendChild(new Text(" : "))
         }
-        this.factoryCell.appendChild(image)
+
+        if (this.factory_selector == null) {
+            // Make a selector for the factory
+            let on_selection_changed = new_factory_def => {
+                // Find the Factory for this recipe
+                let factory = spec.spec[this.recipe.name]
+
+                // If we found one, update the factory definition with the new
+                // definition and force a recalc
+                if (factory) {
+                    factory.setFactory(new_factory_def, spec)
+                    itemUpdate()
+                }
+            }
+
+            this.factory_selector = Selector.makeFactoryForRecipe(this.recipe, on_selection_changed);
+        }
+        this.factoryCell.appendChild(this.factory_selector.display_node)
+
         this.factoryCell.appendChild(new Text(" \u00d7"))
         this.countNode.textContent = alignCount(this.count)
 
