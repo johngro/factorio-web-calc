@@ -45,6 +45,10 @@ var useLegacyCalculations
 // Size of the sprite sheet, as [x, y] array.
 var spriteSheetSize
 
+// All of the items and recipies parsed from the raw data
+var allItems
+var allRecipes
+
 var initDone = false
 
 // Set the page back to a state immediately following initial setup, but before
@@ -136,6 +140,9 @@ function loadData(modName, settings) {
 
         var items = graph[0]
         var recipes = graph[1]
+
+        allItems = items
+        allRecipes = recipes
 
         belts = getBelts(data)
         fuel = getFuel(data, items)["chemical"]

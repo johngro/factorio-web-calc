@@ -180,6 +180,7 @@ function itemUpdate() {
     }
     globalTotals = solver.solve(rates, spec.ignore, spec)
     display()
+    updateUses(build_targets)
 }
 
 function Header(name, colSpan) {

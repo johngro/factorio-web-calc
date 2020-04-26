@@ -1,0 +1,59 @@
+div.item-info-top {
+    display: flex;
+}
+
+#made-by, #used-by {
+    padding: 4px;
+    padding-right: 10px;
+    padding-left: 10px;
+}
+
+#used-by {
+    border-right: 2px solid var(--light);
+}
+
+#item_info_tab div.item-info-title {
+    font-size: 20pt;
+    text-shadow: -1px -1px 0px var(--dark), -1px 1px 0px var(--dark), 1px -1px 0px var(--dark), 1px 1px 0px var(--dark);
+}
+
+#item_info_tab table {
+    border-collapse: collapse;
+}
+
+tr.item-info-header th, tr.item-info-row td {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    border-bottom: 1px solid var(--light);
+}
+
+tr.item-info-row td {
+    padding-left: 8px;
+}
+
+tr.item-info-row td.item-info-recipe,
+tr.item-info-row td.item-info-ingredient {
+    border-right: 1px solid var(--light);
+}
+
+tr.item-info-row span.item-info-ingredient-span,
+tr.item-info-row span.item-info-product-span {
+    padding-left: 8px;
+    padding-right: 8px;
+}
+
+tr.item-info-row div.product {
+    position: relative;
+    display: inline-block;
+}
+
+tr.item-info-row div.product span.count {
+    position: absolute;
+    right: 1px;
+    bottom: 1px;
+    font-size: 12px;
+    font-family: monospace;
+    color: var(--bright);
+    text-shadow: -1px -1px 0px var(--dark), -1px 1px 0px var(--dark), 1px -1px 0px var(--dark), 1px 1px 0px var(--dark);
+}
+

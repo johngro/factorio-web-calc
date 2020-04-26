@@ -442,6 +442,7 @@ var tabMap = {
     "totals_tab": "totals_button",
     "steps_tab": "steps_button",
     "graph_tab": "graph_button",
+    "item_info_tab": "item_info_button",
     "settings_tab": "settings_button",
     "about_tab": "about_button",
     "faq_tab": "faq_button",

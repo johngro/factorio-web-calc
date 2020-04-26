@@ -5,6 +5,7 @@
     <link rel="shortcut icon" href="favicon.png" type="image/x-icon">
     <link rel="stylesheet" type="text/css" href="calc.css">
     <link rel="stylesheet" type="text/css" href="dropdown.css">
+    <link rel="stylesheet" type="text/css" href="item_info.css">
 <script>
   (function(i,s,o,g,r,a,m){i['GoogleAnalyticsObject']=r;i[r]=i[r]||function(){
   (i[r].q=i[r].q||[]).push(arguments)},i[r].l=1*new Date();a=s.createElement(o),
@@ -57,6 +58,7 @@
     <script src="settings.js"></script>
     <script src="init.js"></script>
     <script src="selector.js"></script>
+    <script src="item_info.js"></script>
 </head>
 
 <!--Copyright 2015-2019 Kirk McDonald
@@ -93,6 +95,7 @@ limitations under the License.-->
         <button class="tab_button" id="totals_button" onclick="clickTab('totals_tab')">Factory</button>
         <!--<button class="tab_button" id="steps_button" onclick="clickTab('steps_tab')">Items</button>-->
         <button class="tab_button" id="graph_button" onclick="clickVisualize('graph_tab')">Visualize</button>
+        <button class="tab_button" id="item_info_button" onclick="clickTab('item_info_tab')">Item Info</button>
         <button class="tab_button" id="settings_button" onclick="clickTab('settings_tab')">Settings</button>
         <button class="tab_button" id="faq_button" onclick="clickTab('faq_tab')">FAQ</button>
         <button class="tab_button" id="about_button" onclick="clickTab('about_tab')">About</button>
@@ -186,6 +189,39 @@ limitations under the License.-->
             </div>
             <div class="graph-content">
                 <svg id="graph"></svg>
+            </div>
+        </div>
+    </div>
+
+    <div id="item_info_tab" class="tab">
+        <div class="item-info-top">
+            <div id="used-by">
+                <div class="item-info-title">Used By</div>
+                <table id="used-by-table">
+                    <thead>
+                        <tr class="item-info-header">
+                            <th>Recipe</th>
+                            <th>Consumes</th>
+                            <th>Produces</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+            <div id="made-by">
+                <div class="item-info-title">Made By</div>
+                <table id="made-by-table">
+                    <thead>
+                        <tr class="item-info-header">
+                            <th>Recipe</th>
+                            <th>Consumes</th>
+                            <th>Produces</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
             </div>
         </div>
     </div>
