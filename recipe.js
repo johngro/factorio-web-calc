@@ -34,7 +34,33 @@ function makeIngredient(data, i, items) {
         amount = i[1]
     }
     amount *= i.probability || 1
-    return new Ingredient(RationalFromFloat(amount), getItem(data, items, name))
+
+    let ret = new Ingredient(RationalFromFloat(amount), getItem(data, items, name))
+    if ("amount_min" in i && "amount_max" in i) {
+        ret.amount_min = RationalFromFloat(i.amount_min)
+        ret.amount_max = RationalFromFloat(i.amount_max)
+    }
+
+    return ret
+}
+
+function makeProductElement(ing, tooltip_container) {
+    let p = document.createElement("div")
+    p.classList.add("product")
+    p.appendChild(getImage(ing.item, !tooltip_container, p, tooltip_container))
+
+    let count = document.createElement("span")
+    count.classList.add("count")
+
+    if ("amount_min" in ing && "amount_max" in ing) {
+        count.textContent = ing.amount_min.toFloat() + "-" + ing.amount_max.toFloat()
+    } else {
+        count.textContent = ing.amount.toFloat()
+    }
+
+    p.appendChild(count)
+
+    return p
 }
 
 function Recipe(name, localized_name, col, row, category, time, ingredients, products) {
@@ -122,13 +148,7 @@ Recipe.prototype = {
             t.appendChild(new Text("Products: "))
             for (var i = 0; i < this.products.length; i++) {
                 var ing = this.products[i]
-                var p = document.createElement("div")
-                p.classList.add("product")
-                p.appendChild(getImage(ing.item, true))
-                var count = document.createElement("span")
-                count.classList.add("count")
-                count.textContent = ing.amount.toDecimal()
-                p.appendChild(count)
+                var p = makeProductElement(ing)
                 t.appendChild(p)
                 t.appendChild(new Text("\u00A0"))
             }
