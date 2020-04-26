@@ -26,6 +26,21 @@ function addTarget(itemName) {
     return target
 }
 
+function removeTarget(target) {
+    build_targets.splice(target.index, 1)
+    for (var i=target.index; i < build_targets.length; i++) {
+        build_targets[i].index--
+    }
+    target.element.remove()
+}
+
+function removeAllTargets() {
+    while (build_targets.length) {
+        let t = build_targets[build_targets.length - 1];
+        removeTarget(t)
+    }
+}
+
 function isFactoryTarget(recipeName) {
     // Special case: rocket-part and rocket-launch are linked in a weird way.
     if (recipeName === "rocket-part") {

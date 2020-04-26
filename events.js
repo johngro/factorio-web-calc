@@ -105,11 +105,7 @@ function RecipeSelectorHandler(target, i) {
 // The "x" button to remove a target.
 function RemoveHandler(target) {
     this.handleEvent = function(event) {
-        build_targets.splice(target.index, 1)
-        for (var i=target.index; i < build_targets.length; i++) {
-            build_targets[i].index--
-        }
-        target.element.remove()
+        removeTarget(target)
         itemUpdate()
     }
 }
