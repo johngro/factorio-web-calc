@@ -16,7 +16,7 @@ limitations under the License.*/
 function formatSettings(targets) {
     var settings = ""
     if (currentTab != DEFAULT_TAB) {
-        settings += "tab=" + currentTab.slice(0, currentTab.indexOf("_")) + "&"
+        settings += "tab=" + currentTab.slice(0, currentTab.indexOf("_tab")) + "&"
     }
     if (showDebug != DEFAULT_DEBUG) {
         settings += "debug=on&"
