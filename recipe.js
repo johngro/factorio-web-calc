@@ -37,8 +37,9 @@ function makeIngredient(data, i, items) {
     return new Ingredient(RationalFromFloat(amount), getItem(data, items, name))
 }
 
-function Recipe(name, col, row, category, time, ingredients, products) {
+function Recipe(name, localized_name, col, row, category, time, ingredients, products) {
     this.name = name
+    this.localized_name = localized_name
     this.icon_col = col
     this.icon_row = row
     this.category = category
@@ -162,24 +163,24 @@ function makeRecipe(data, d, items) {
     for (var i=0; i < d.ingredients.length; i++) {
         ingredients.push(makeIngredient(data, d.ingredients[i], items))
     }
-    return new Recipe(d.name, d.icon_col, d.icon_row, d.category, time, ingredients, products)
+    return new Recipe(d.name, d.localized_name, d.icon_col, d.icon_row, d.category, time, ingredients, products)
 }
 
 function ResourceRecipe(item) {
-    Recipe.call(this, item.name, item.icon_col, item.icon_row, null, zero, [], [new Ingredient(one, item)])
+    Recipe.call(this, item.name, item.localized_name, item.icon_col, item.icon_row, null, zero, [], [new Ingredient(one, item)])
 }
 ResourceRecipe.prototype = Object.create(Recipe.prototype)
 ResourceRecipe.prototype.makesResource = function() {
     return true
 }
 
-function MiningRecipe(name, col, row, category, hardness, mining_time, ingredients, products) {
+function MiningRecipe(name, localized_name, col, row, category, hardness, mining_time, ingredients, products) {
     this.hardness = hardness
     this.mining_time = mining_time
     if (!ingredients) {
         ingredients = []
     }
-    Recipe.call(this, name, col, row, category, zero, ingredients, products)
+    Recipe.call(this, name, localized_name, col, row, category, zero, ingredients, products)
 }
 MiningRecipe.prototype = Object.create(Recipe.prototype)
 MiningRecipe.prototype.makesResource = function() {
@@ -199,6 +200,7 @@ function getRecipeGraph(data) {
     var water = getItem(data, items, "water")
     recipes["water"] = new Recipe(
         "water",
+        null,
         water.icon_col,
         water.icon_row,
         "water",
@@ -209,6 +211,7 @@ function getRecipeGraph(data) {
     var reactor = data.items["nuclear-reactor"]
     recipes["nuclear-reactor-cycle"] = new Recipe(
         "nuclear-reactor-cycle",
+        null,
         reactor.icon_col,
         reactor.icon_row,
         "nuclear",
@@ -222,6 +225,7 @@ function getRecipeGraph(data) {
     var rocket = data.items["rocket-silo"]
     recipes["rocket-launch"] = new Recipe(
         "rocket-launch",
+        null,
         rocket.icon_col,
         rocket.icon_row,
         "rocket-launch",
@@ -234,6 +238,7 @@ function getRecipeGraph(data) {
     var steam = data.items["steam"]
     recipes["steam"] = new Recipe(
         "steam",
+        null,
         steam.icon_col,
         steam.icon_row,
         "boiler",
@@ -275,8 +280,11 @@ function getRecipeGraph(data) {
         } else {
             hardness = null
         }
-        recipes[name] = new MiningRecipe(
-            name,
+
+        let mining_name = "mining-" + name
+        recipes[mining_name] = new MiningRecipe(
+            mining_name,
+            entity.localized_name,
             entity.icon_col,
             entity.icon_row,
             "mining-" + category,
