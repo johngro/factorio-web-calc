@@ -78,6 +78,13 @@ img.icon {
     border: 2px solid var(--bright);
     font-family: monospace;
 }
+
+.changebox ul {
+    margin: auto;
+    margin-left: 1em;
+    padding: 0;
+}
+
 /* tooltips */
 div.tooltip {
     opacity: 1;
