@@ -13,9 +13,72 @@ See the License for the specific language governing permissions and
 limitations under the License.*/
 "use strict"
 
-function formatName(name) {
-    name = name.replace(new RegExp("-", 'g'), " ")
-    return name[0].toUpperCase() + name.slice(1)
+function formatName(obj) {
+    // If we have not already computed and cached the display name for
+    // this object, do so now.
+    if (!obj.display_name) {
+        if (obj.localized_name && Object.keys(obj.localized_name).length > 0) {
+            // If the object has a localized name, attempt to use that first.
+
+            // If our browser has the experimental languages feature, use
+            // those preferences first.
+            let langs = []
+            if (window.navigator.languages) {
+                langs = window.navigator.languages
+            }
+
+            // Fall back on navigator.language if all else fails.
+            langs.concat([ window.navigator.language ])
+
+            // Now that we have our list of languages, start to search the
+            // localized names.
+            for (let i = 0; i < langs.length; i++) {
+                let l = langs[i]
+                if (l in obj.localized_name) {
+                    // Found it!
+                    obj.display_name = obj.localized_name[l]
+                    break;
+                }
+
+                // If we didn't find an exact match, try dropping the country
+                // code (if any)
+                l = l.split("-")[0]
+                if (l in obj.localized_name) {
+                    // Found it!
+                    obj.display_name = obj.localized_name[l]
+                    break;
+                }
+            }
+
+            // If we still have not found our prefered language, fall back on
+            // basic english.
+            if (!obj.display_name) {
+                if ("en" in obj.localized_name) {
+                    obj.display_name = obj.localized_name["en"]
+                }
+            }
+
+            // If we *still* have not found it, just take the first thing in the
+            // list.
+            if (!obj.display_name) {
+                obj.display_name = obj.localized_name[Object.keys(obj.localized_name)[0]]
+            }
+        }
+        else if (obj.name) {
+            // If there was no localized name, fall back on using the internal
+            // object name by removing all of the "-"s and capitalizing the
+            // first letter of the name.
+            let name = obj.name.replace(new RegExp("-", 'g'), " ")
+            obj.display_name = name[0].toUpperCase() + name.slice(1)
+        } else  {
+            // If all else fails, just say "Unknown".  This really
+            // should never happen since all object should always have
+            // an internal name.
+           obj.display_name = "Unknown"
+        }
+    }
+
+    return obj.display_name
 }
 
 function displayRate(x) {
@@ -179,7 +242,7 @@ BeltIcon.prototype = {
         var title = document.createElement("h3")
         var im = getImage(this, true)
         title.appendChild(im)
-        title.appendChild(new Text(formatName(this.name)))
+        title.appendChild(new Text(formatName(this)))
         t.appendChild(title)
         var b = document.createElement("b")
         b.textContent = "Max throughput: "

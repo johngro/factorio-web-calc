@@ -13,8 +13,9 @@ See the License for the specific language governing permissions and
 limitations under the License.*/
 "use strict"
 
-function Item(name, col, row, phase, group, subgroup, order) {
+function Item(name, localized_name, col, row, phase, group, subgroup, order) {
     this.name = name
+    this.localized_name = localized_name
     this.icon_col = col
     this.icon_row = row
     this.recipes = []
@@ -63,9 +64,8 @@ Item.prototype = {
         var t = document.createElement("div")
         t.classList.add("frame")
         var title = document.createElement("h3")
-        var im = getImage(this, true)
-        title.appendChild(im)
-        title.appendChild(new Text(formatName(this.name)))
+        title.appendChild(getImage(this, true))
+        title.appendChild(new Text(formatName(this)))
         t.appendChild(title)
         if (extra) {
             t.appendChild(extra)
@@ -87,6 +87,7 @@ function getItem(data, items, name) {
         }
         var item = new Item(
             name,
+            d.localized_name,
             d.icon_col,
             d.icon_row,
             phase,
@@ -105,6 +106,7 @@ function getItems(data) {
     var reactor = data.items["nuclear-reactor"]
     items[cycleName] = new Item(
         cycleName,
+        reactor.localized_name,
         reactor.icon_col,
         reactor.icon_row,
         "abstract",

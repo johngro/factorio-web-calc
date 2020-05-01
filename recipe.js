@@ -105,9 +105,8 @@ Recipe.prototype = {
         var t = document.createElement("div")
         t.classList.add("frame")
         var title = document.createElement("h3")
-        var im = getImage(this, true)
-        title.appendChild(im)
-        var name = formatName(this.name)
+        title.appendChild(getImage(this, true))
+        var name = formatName(this)
         if (this.products.length === 1 && this.products[0].item.name === this.name && one.less(this.products[0].amount)) {
             name = this.products[0].amount.toDecimal() + " \u00d7 " + name
         }
@@ -147,7 +146,7 @@ Recipe.prototype = {
             p.classList.add("product")
             p.appendChild(getImage(ing.item, true))
             t.appendChild(p)
-            t.appendChild(new Text("\u00A0" + ing.amount.toDecimal() + " \u00d7 " + formatName(ing.item.name)))
+            t.appendChild(new Text("\u00A0" + ing.amount.toDecimal() + " \u00d7 " + formatName(ing.item)))
         }
         return t
     }

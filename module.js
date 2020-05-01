@@ -54,9 +54,8 @@ Module.prototype = {
         var t = document.createElement("div")
         t.classList.add("frame")
         var title = document.createElement("h3")
-        var im = getImage(this, true)
-        title.appendChild(im)
-        title.appendChild(new Text(formatName(this.name)))
+        title.appendChild(getImage(this, true))
+        title.appendChild(new Text(formatName(this)))
         t.appendChild(title)
         var b
         var hundred = RationalFromFloat(100)
